@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Board from "./components/Board";
+import ScoreBoard from "./components/ScoreBoard";
+import ResetButton from "./components/ResetButton";
 import "./App.css";
 
 
@@ -13,6 +15,9 @@ export default function App() {
 
     // Creates a state to keep track of the scores//
     const [scores, setScores] = useState({xScore: 0, oScore: 0});
+
+    // Creates a state to keep track of the game over status//
+    const [gameOver, setGameOver] = useState(false);
 
     const Win_Conditions = [
         [0, 1, 2],
@@ -32,7 +37,7 @@ export default function App() {
 
             // Checks if the board has a value and if the values are equal//
             if(board[a] && board[a] === board[b] && board[a] === board[c]) {
-                console.log(board[a])
+                setGameOver(true);
                 return board[a];
             }
         }
@@ -63,7 +68,6 @@ export default function App() {
                 setScores({...scores, xScore});
             }
          }
-        console.log(scores)
         // Updates the board state with the new array//
         setBoard(updateBoard);
 
@@ -71,9 +75,17 @@ export default function App() {
         setXPlaying(!xPlaying);
     }
 
+    // Resets the board and game over status//
+    const resetBoard = () => {
+        setGameOver(false);
+        setBoard(Array(9).fill(null));
+    }
+
     return (
         <div className="App">
-            <Board board={board} onClick={handleBoxClick}/>
+            <ScoreBoard scores={scores} xPlaying={xPlaying}/>
+            <Board board={board} onClick={gameOver ? resetBoard : handleBoxClick}/>
+            <ResetButton resetBoard={resetBoard}/>
         </div>
     );
 }
